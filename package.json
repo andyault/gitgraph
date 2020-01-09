@@ -1,0 +1,16 @@
+{
+  "name": "contributing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "d3": "^5.15.0",
+    "express": "^4.17.1"
+  }
+}
