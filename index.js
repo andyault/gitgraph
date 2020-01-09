@@ -1,38 +1,22 @@
 const express = require('express');
-const fs = require('fs');
-const util = require('util');
-const path = require('path');
-const cheerio = require('cheerio');
+const { JSDOM } = require('jsdom');
+
+const graphs = require('./graphs');
 
 //
 const app = express();
 
-const readFilePromise = util.promisify(fs.readFile);
-const htmlPromise = readFilePromise(path.join(__dirname, 'index.html'), 'utf8');
-
 app.get('/favicon.ico', (req, res) => res.send(''));
 
-app.get('/:graph', (req, res, next) => {
-  const filePath = path.join(__dirname, 'graphs', req.params.graph + '.js');
+app.get('/:graph', async (req, res, next) => {
+  const graph = graphs[req.params.graph];
 
-  if (!fs.existsSync(filePath)) return next();
+  if (!graph) return next();
 
-  const promises = [htmlPromise, readFilePromise(filePath, 'utf8')];
+  console.log(graph);
 
-  Promise.all(promises)
-    .then(([html, graphjs]) => {
-      const $ = cheerio.load(html);
-      const script = `<script>${graphjs}</script>`;
-
-      $(script).insertBefore('#init');
-
-      const ret = $.html();
-      res.send(ret);
-    })
-    .catch(error => {
-      console.error(error);
-      res.status(500).json(error);
-    });
+  const dom = new JSDOM();
+  res.send(dom.serialize);
 });
 
 app.all('*', (req, res) => res.status(404).send('404'));
