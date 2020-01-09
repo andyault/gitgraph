@@ -1,24 +1,21 @@
 const express = require('express');
-const { JSDOM } = require('jsdom');
 
 const graphs = require('./graphs');
+const util = require('./util');
 
 //
 const app = express();
 
-app.get('/favicon.ico', (req, res) => res.send(''));
-
 app.get('/:graph', async (req, res, next) => {
   const graph = graphs[req.params.graph];
-
   if (!graph) return next();
 
-  console.log(graph);
-
-  const dom = new JSDOM();
-  res.send(dom.serialize);
+  //
+  const dom = util.renderGraph(graph);
+  res.send(dom.serialize());
 });
 
+app.get('/favicon.ico', (req, res) => res.send(''));
 app.all('*', (req, res) => res.status(404).send('404'));
 
 //
