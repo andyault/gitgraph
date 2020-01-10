@@ -11,7 +11,7 @@ draw.clearCanvas = context => {
 
 draw.drawLegend = (context, shadowSelection) => {
   context.lineWidth = 2;
-  context.font = '12px sans-serif';
+  context.font = '16px sans-serif';
 
   context.moveTo(128, 16);
   context.lineTo(128, draw.CANVAS_HEIGHT - 16);
@@ -19,10 +19,8 @@ draw.drawLegend = (context, shadowSelection) => {
 
   shadowSelection.selectAll('branch').each(function(branch, i, branches) {
     const branchSelection = d3.select(this);
-    const iMax = branches.length - 1.5;
 
-    const labelY = draw.CANVAS_HEIGHT / 2 + (i - iMax / 2) * 16;
-    context.fillText(branchSelection.text(), 16, labelY);
+    context.fillText(branchSelection.text(), 16, 32 + i * 32);
   });
 };
 

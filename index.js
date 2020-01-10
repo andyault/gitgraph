@@ -2,16 +2,20 @@ const express = require('express');
 
 const graphs = require('./graphs');
 const util = require('./util');
+const graph = require('./graph');
 
 //
 const app = express();
 
 app.get('/:graph', async (req, res, next) => {
-  const graph = graphs[req.params.graph];
-  if (!graph) return next();
+  const populateGraph = graphs[req.params.graph];
+  if (!populateGraph) return next();
 
   //
-  const dom = util.renderGraph(graph);
+  const reqGraph = graph.createGraph();
+  populateGraph(reqGraph);
+
+  const dom = util.renderGraph(reqGraph);
   res.send(dom.serialize());
 });
 
