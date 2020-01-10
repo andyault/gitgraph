@@ -65,7 +65,7 @@ const initShadow = (shadowInfo, graph) => {
   selection
     .enter()
     .append('branch')
-    .text(d => d.name);
+    .attr('name', branch => branch.name);
 };
 
 const createOutput = (shadowInfo, canvasInfo) => {

@@ -12,7 +12,7 @@ app.get('/:graph', async (req, res, next) => {
   if (!populateGraph) return next();
 
   //
-  const reqGraph = graph.createGraph();
+  const reqGraph = new graph.Graph();
   populateGraph(reqGraph);
 
   const dom = util.renderGraph(reqGraph);

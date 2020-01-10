@@ -20,7 +20,7 @@ draw.drawLegend = (context, shadowSelection) => {
   shadowSelection.selectAll('branch').each(function(branch, i, branches) {
     const branchSelection = d3.select(this);
 
-    context.fillText(branchSelection.text(), 16, 32 + i * 32);
+    context.fillText(branchSelection.attr('name'), 16, 32 + i * 32);
   });
 };
 

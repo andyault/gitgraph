@@ -9,15 +9,14 @@ const graph = {
   },
 };
 
-//factory pattern
-//see https://medium.com/javascript-scene/javascript-factory-functions-vs-constructor-functions-vs-classes-2f22ceddf33e
-
 /** Graph */
-const graphProto = {
-  branches: [],
-  commits: [],
-  started: false,
-  ended: false,
+graph.Graph = class Graph {
+  constructor() {
+    this.branches = [];
+    this.commits = [];
+    this.started = false;
+    this.ended = false;
+  }
 
   /**
    * Create a new Branch
@@ -49,9 +48,7 @@ const graphProto = {
     const index = options.index || this.branches.length;
 
     //use splice so that indexes will be sequential and nothing gets replaced
-    const branch = Object.create(branchProto);
-    branch.graph = this;
-    branch.name = name;
+    const branch = new graph.Branch(name, this);
 
     this.branches.splice(index, 0, branch);
 
@@ -63,7 +60,7 @@ const graphProto = {
     });
 
     return branch;
-  },
+  }
 
   /**
    * Start the Graph. Any Branches created before start is called will be shown
@@ -78,7 +75,7 @@ const graphProto = {
     this.started = true;
 
     return this;
-  },
+  }
 
   /**
    * End the Graph. Any new commits made after a Graph has ended will error.
@@ -94,7 +91,7 @@ const graphProto = {
     this.ended = true;
 
     return this;
-  },
+  }
 
   /**
    * Private method for adding to this Graph's commits
@@ -104,17 +101,16 @@ const graphProto = {
     if (this.ended) throw new Error('Graph has been ended');
 
     this.commits.push(commit);
-  },
+  }
 };
 
-/**
- * Create a new Graph
- * @returns {Graph} The newly created Graph
- */
-graph.createGraph = () => Object.create(graphProto);
-
 /** Branch */
-const branchProto = {
+graph.Branch = class Branch {
+  constructor(name, graph) {
+    this.name = name;
+    this.graph = graph;
+  }
+
   /**
    * Add a new commit to the Graph for this Branch
    * @param {string} [message] - The commit message
@@ -132,7 +128,7 @@ const branchProto = {
     this.graph.commit(commit);
 
     return this;
-  },
+  }
 
   /**
    * Add a new merge commit to the Graph for this Branch
@@ -169,7 +165,7 @@ const branchProto = {
     this.graph.commit(commit);
 
     return this;
-  },
+  }
 
   /**
    * Create a new Branch from the current Branch
@@ -187,7 +183,7 @@ const branchProto = {
 
     const newBranch = this.graph.branch(name, graphOptions);
     return newBranch;
-  },
+  }
 };
 
 //done :)
