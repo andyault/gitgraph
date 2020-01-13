@@ -142,7 +142,7 @@ gitGraph.Branch = class Branch {
    * @param {string} author - The commit author
    * @returns {Branch} The current Branch
    */
-  merge(from, message = '', author) {
+  merge(from, message = '', author, options = {}) {
     //from can be a branch or a string
     let fromName = from;
 
@@ -160,10 +160,11 @@ gitGraph.Branch = class Branch {
     const commit = {
       type: gitGraph.commitTypes.MERGE,
       branch: this.name,
-      fromIndex,
+      // fromIndex,
       from: fromName,
       message,
       author,
+      dashed: options.dashed,
     };
 
     this.graph.commit(commit);
@@ -187,6 +188,19 @@ gitGraph.Branch = class Branch {
 
     const newBranch = this.graph.branch(name, message, author, graphOptions);
     return newBranch;
+  }
+
+  delete(message = '', author) {
+    const commit = {
+      type: gitGraph.commitTypes.DELETE,
+      branch: this.name,
+      message,
+      author,
+    };
+
+    this.graph.commit(commit);
+
+    return this;
   }
 };
 

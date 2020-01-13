@@ -21,13 +21,14 @@ util.initDOM = function initDOM() {
 };
 
 /** Create a new canvas and return a reference to the context */
-util.initCanvas = function initCanvas() {
+util.initCanvas = function initCanvas(shadowSelection) {
   const { dom, selection } = util.initDOM();
+  const { width, height } = draw.getCanvasSize(shadowSelection);
 
   const canvasSelection = selection
     .append('canvas')
-    .attr('width', draw.CANVAS_WIDTH)
-    .attr('height', draw.CANVAS_HEIGHT);
+    .attr('width', width)
+    .attr('height', height);
 
   const canvas = canvasSelection.node();
   const context = canvas.getContext('2d');
@@ -45,13 +46,11 @@ util.initCanvas = function initCanvas() {
 /** Create a new virtual DOM and virtual canvas, render the given graph, and
  * return a reference to the populated DOM */
 util.renderGraph = function renderGraph(graph) {
-  const canvasInfo = util.initCanvas();
   const shadowInfo = util.initDOM();
-
-  //create elements in our shadow to keep track of our graph
   initShadow(shadowInfo, graph);
 
   //once our shadow is accurate, draw it
+  const canvasInfo = util.initCanvas(shadowInfo.selection);
   draw.drawGraph(canvasInfo.context, shadowInfo.selection);
 
   //create final output
@@ -88,7 +87,21 @@ const initShadow = (shadowInfo, graph) => {
       const branch = d3.select(this.parentNode).datum();
       if (commit.branch !== branch.name) return;
 
-      if (commit.type === gitGraph.commitTypes.BRANCH) return commit.from;
+      if (
+        commit.type === gitGraph.commitTypes.BRANCH ||
+        commit.type === gitGraph.commitTypes.MERGE
+      )
+        return commit.from;
+    })
+    .attr('dashed', function(commit, i, nodes) {
+      const branch = d3.select(this.parentNode).datum();
+      if (commit.branch !== branch.name) return;
+
+      if (
+        commit.type === gitGraph.commitTypes.BRANCH ||
+        commit.type === gitGraph.commitTypes.MERGE
+      )
+        return commit.dashed;
     })
     .text(function(commit, i, nodes) {
       const branch = d3.select(this.parentNode).datum();
