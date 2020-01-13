@@ -2,7 +2,7 @@ const express = require('express');
 
 const graphs = require('./graphs');
 const util = require('./util');
-const graph = require('./graph');
+const gitGraph = require('./gitgraph');
 
 //
 const app = express();
@@ -12,7 +12,7 @@ app.get('/:graph', async (req, res, next) => {
   if (!populateGraph) return next();
 
   //
-  const reqGraph = new graph.Graph();
+  const reqGraph = new gitGraph.Graph();
   populateGraph(reqGraph);
 
   const dom = util.renderGraph(reqGraph);

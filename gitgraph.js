@@ -1,4 +1,4 @@
-const graph = {
+const gitGraph = {
   commitTypes: {
     START: 'START',
     BRANCH: 'BRANCH',
@@ -6,11 +6,13 @@ const graph = {
     MERGE: 'MERGE',
     DELETE: 'DELETE',
     END: 'END',
+
+    EMPTY: 'EMPTY',
   },
 };
 
 /** Graph */
-graph.Graph = class Graph {
+gitGraph.Graph = class Graph {
   constructor() {
     this.branches = [];
     this.commits = [];
@@ -28,7 +30,7 @@ graph.Graph = class Graph {
    *   shown in the Graph
    * @returns {Branch} The newly created Branch
    */
-  branch(name, options = {}) {
+  branch(name, message = '', author, options = {}) {
     //make sure name is unique
     const existing = this.branches.find(branch => branch.name === name);
 
@@ -48,15 +50,17 @@ graph.Graph = class Graph {
     const index = options.index || this.branches.length;
 
     //use splice so that indexes will be sequential and nothing gets replaced
-    const branch = new graph.Branch(name, this);
+    const branch = new gitGraph.Branch(name, this);
 
     this.branches.splice(index, 0, branch);
 
     //also write to commits so we have a reference of when this branch was made
     this.commit({
-      type: graph.commitTypes.BRANCH,
+      type: gitGraph.commitTypes.BRANCH,
       branch: branch.name,
       from: this.started ? options.from : undefined,
+      message,
+      author,
     });
 
     return branch;
@@ -71,7 +75,7 @@ graph.Graph = class Graph {
   start() {
     if (this.started) throw new Error('Graph already started');
 
-    this.commit({ type: graph.commitTypes.START });
+    this.commit({ type: gitGraph.commitTypes.START });
     this.started = true;
 
     return this;
@@ -87,7 +91,7 @@ graph.Graph = class Graph {
 
     if (this.ended) throw new Error('Graph already ended');
 
-    this.commit({ type: graph.commitTypes.END });
+    this.commit({ type: gitGraph.commitTypes.END });
     this.ended = true;
 
     return this;
@@ -105,7 +109,7 @@ graph.Graph = class Graph {
 };
 
 /** Branch */
-graph.Branch = class Branch {
+gitGraph.Branch = class Branch {
   constructor(name, graph) {
     this.name = name;
     this.graph = graph;
@@ -119,7 +123,7 @@ graph.Branch = class Branch {
    */
   commit(message = '', author) {
     const commit = {
-      type: graph.commitTypes.COMMIT,
+      type: gitGraph.commitTypes.COMMIT,
       branch: this.name,
       message,
       author,
@@ -154,7 +158,7 @@ graph.Branch = class Branch {
 
     //add to graph
     const commit = {
-      type: graph.commitTypes.MERGE,
+      type: gitGraph.commitTypes.MERGE,
       branch: this.name,
       fromIndex,
       from: fromName,
@@ -175,16 +179,16 @@ graph.Branch = class Branch {
    *   shown in the Graph
    * @returns {Branch} The newly created Branch
    */
-  branch(name, options) {
+  branch(name, message = '', author, options = {}) {
     const graphOptions = {
       ...options,
       from: this.name,
     };
 
-    const newBranch = this.graph.branch(name, graphOptions);
+    const newBranch = this.graph.branch(name, message, author, graphOptions);
     return newBranch;
   }
 };
 
 //done :)
-module.exports = graph;
+module.exports = gitGraph;

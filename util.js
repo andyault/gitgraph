@@ -1,7 +1,9 @@
 const d3 = require('d3');
 const { JSDOM } = require('jsdom');
+const pretty = require('pretty');
 
 const draw = require('./draw');
+const gitGraph = require('./gitgraph');
 
 const util = {};
 
@@ -58,14 +60,42 @@ util.renderGraph = function renderGraph(graph) {
 };
 
 const initShadow = (shadowInfo, graph) => {
+  // console.log(graph);
+
   const selection = shadowInfo.selection
     .selectAll('branch')
-    .data(graph.branches);
-
-  selection
+    .data(graph.branches)
     .enter()
     .append('branch')
-    .attr('name', branch => branch.name);
+    .attr('name', branch => branch.name)
+    .selectAll('commit')
+    .data(graph.commits)
+    .enter()
+    .append('commit')
+    .attr('type', function(commit, i, nodes) {
+      const branch = d3.select(this.parentNode).datum();
+
+      if (
+        commit.branch !== branch.name &&
+        commit.type !== gitGraph.commitTypes.START &&
+        commit.type !== gitGraph.commitTypes.END
+      )
+        return gitGraph.commitTypes.EMPTY;
+
+      return commit.type;
+    })
+    .attr('from', function(commit, i, nodes) {
+      const branch = d3.select(this.parentNode).datum();
+      if (commit.branch !== branch.name) return;
+
+      if (commit.type === gitGraph.commitTypes.BRANCH) return commit.from;
+    })
+    .text(function(commit, i, nodes) {
+      const branch = d3.select(this.parentNode).datum();
+      if (commit.branch !== branch.name) return '';
+
+      return commit.message || '';
+    });
 };
 
 const createOutput = (shadowInfo, canvasInfo) => {
@@ -80,7 +110,7 @@ const createOutput = (shadowInfo, canvasInfo) => {
   const pre = document.createElement('pre');
   pre.style.borderTop = '1px solid #666';
   pre.style.paddingTop = '1em';
-  pre.textContent = shadowInfo.dom.window.document.body.innerHTML;
+  pre.textContent = pretty(shadowInfo.dom.window.document.body.innerHTML);
   document.body.appendChild(pre);
 
   return dom;
