@@ -6,9 +6,9 @@ module.exports = graph => {
 
   graph.start();
 
-  staging.merge(hotfix, null, null, { dashed: true });
-  master.merge(hotfix, null, null, { dashed: true });
-  foh.merge(hotfix, null, null, { dashed: true });
+  staging.merge(hotfix, { message: 'PR to staging', dashed: true });
+  master.merge(hotfix, { message: 'PR to master', dashed: true });
+  foh.merge(hotfix, { message: 'PR to FOH', dashed: true });
 
   hotfix.delete();
   graph.end();

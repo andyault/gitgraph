@@ -1,8 +1,8 @@
 const express = require('express');
 
 const graphs = require('./graphs');
-const util = require('./util');
-const gitGraph = require('./gitgraph');
+const util = require('./lib/util');
+const gitGraph = require('./lib/gitgraph');
 
 //
 const app = express();
