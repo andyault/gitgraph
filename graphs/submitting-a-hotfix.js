@@ -11,5 +11,4 @@ module.exports = graph => {
   foh.merge(hotfix, { message: 'PR to FOH', dashed: true });
 
   hotfix.delete();
-  graph.end();
 };
