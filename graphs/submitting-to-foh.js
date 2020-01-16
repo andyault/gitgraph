@@ -4,9 +4,7 @@ module.exports = graph => {
 
   graph.start();
 
-  const toFoh = feature.branch('to-foh', null, null, { index: 1 }).merge(foh);
+  const toFoh = feature.branch('to-foh', {}, { index: 1 }).merge(foh);
 
-  foh.merge(toFoh, null, null, { dashed: true });
-
-  graph.end();
+  foh.merge(toFoh, { dashed: true });
 };

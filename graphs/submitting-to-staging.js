@@ -6,11 +6,10 @@ module.exports = graph => {
   graph.start();
 
   const toStaging = feature
-    .branch('to-staging', null, null, { index: 1 })
+    .branch('to-staging', {}, { index: 1 })
     .merge(staging);
 
-  staging.merge(toStaging, null, null, { dashed: true });
+  staging.merge(toStaging, { dashed: true });
 
   toFoh.delete();
-  graph.end();
 };
