@@ -1,5 +1,5 @@
 module.exports = graph => {
-  const staging = graph.branch('foh');
+  const staging = graph.branch('staging');
   const feature = graph.branch('feature');
   const toFoh = graph.branch('to-foh');
 
