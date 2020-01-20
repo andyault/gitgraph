@@ -7,6 +7,9 @@ const gitGraph = require('./lib/gitgraph');
 //
 const app = express();
 
+app.disable('etag');
+
+//
 app.get('/:graph', async (req, res, next) => {
   const populateGraph = graphs[req.params.graph];
   if (!populateGraph) return next();
@@ -15,8 +18,8 @@ app.get('/:graph', async (req, res, next) => {
   const reqGraph = new gitGraph.Graph();
   populateGraph(reqGraph);
 
-  const dom = util.renderGraph(reqGraph);
-  res.send(dom.serialize());
+  const html = util.renderGraph(reqGraph);
+  res.type('image/png').send(html);
 });
 
 app.get('/favicon.ico', (req, res) => res.send(''));
