@@ -2,6 +2,7 @@ const express = require('express');
 
 const graphs = require('./graphs');
 const util = require('./lib/util');
+const draw = require('./lib/draw');
 const gitGraph = require('./lib/gitgraph');
 
 //
@@ -18,8 +19,10 @@ app.get('/:graph', async (req, res, next) => {
   const reqGraph = new gitGraph.Graph();
   populateGraph(reqGraph);
 
-  const html = util.renderGraph(reqGraph);
-  res.type('image/png').send(html);
+  const html = util.renderGraph(reqGraph, draw.AXIS_VERTICAL);
+  res
+    // .type('image/png')
+    .send(html);
 });
 
 app.get('/favicon.ico', (req, res) => res.send(''));
