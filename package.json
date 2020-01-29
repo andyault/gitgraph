@@ -4,19 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index",
-    "watch": "nodemon index"
+    "start": "nodemon serve.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "canvas": "^2.6.1",
     "d3": "^5.15.0",
-    "express": "^4.17.1",
     "jsdom": "^15.2.1",
     "pretty": "^2.0.0"
   },
   "devDependencies": {
+    "express": "^4.17.1",
     "nodemon": "^2.0.2"
   }
 }
