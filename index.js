@@ -11,7 +11,31 @@ const app = express();
 app.disable('etag');
 
 //
-app.get('/:graph', async (req, res, next) => {
+app.get('/', (req, res, next) => {
+  const links = Object.keys(graphs)
+    .map(name => {
+      const label = name.replace(/\-/g, ' ');
+      return `<li><a href="/${name}">${label}</a></li>`;
+    })
+    .join('\n');
+
+  const html = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="utf8" />
+    </head>
+    <body>
+      <ul style="text-transform: capitalize;">
+        ${links}
+      </ul>
+    </body>
+    </html>`;
+
+  res.send(html);
+});
+
+app.get('/:graph', (req, res, next) => {
   const populateGraph = graphs[req.params.graph];
   if (!populateGraph) return next();
 
