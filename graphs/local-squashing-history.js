@@ -7,6 +7,8 @@ module.exports = graph => {
 
   graph.start();
 
+  master.commit();
+
   const feature = master.branch(
     'feature',
     { message: 'branch into feature' },
